@@ -406,18 +406,10 @@ function render(level, plan) {
 export function solve(text, budget = { left: 400_000 }) {
   const level = parse(text);
   if (level.boxes.length === 0) return { moves: '', pushes: 0 };
-  // Split the board at the hallway. The drawn hallway runs across the board, but a line is only used when it
-  // leaves rooms whose boxes and goals pair; of two such lines, the one with the fewest boxes in a room wins.
-  // A level the split cannot describe is searched over the whole board.
-  let parts = null;
-  let best = Infinity;
-  for (const line of [lineThrough(level, true), lineThrough(level, false)]) {
-    const candidate = decompose(level, line);
-    if (candidate === null) continue;
-    let most = 0;
-    for (const p of candidate) if (p.boxes.length > most) most = p.boxes.length;
-    if (parts === null || most < best) { parts = candidate; best = most; }
-  }
+  // The drawn hallway runs across the board, so the across run is the split whenever it is clean; the up/down
+  // run is only a fallback, and a level neither describes is searched over the whole board.
+  let parts = decompose(level, lineThrough(level, true));
+  if (parts === null) parts = decompose(level, lineThrough(level, false));
   if (parts === null) {
     const allFree = new Uint8Array(level.n);
     for (let i = 0; i < level.n; i++) if (!(level.cells[i] & WALL)) allFree[i] = 1;

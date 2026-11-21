@@ -23,9 +23,9 @@ not moves.
 The board is split at the hallway (the free line through the player's start square) into rooms. A push in one room never
 touches another room, and walking between rooms is free, so each room is solved on its own: A* over push states, where a
 state is the sorted box squares plus the square the player stood on after the last push. The split is checked before it is
-used: the free run across the player's row is tried first, then the run up and down the player's column, and a line is
-kept only when every room it leaves holds as many boxes as goals and no box or goal sits on the line. Of two lines that
-pass, the one with the fewest boxes in a room wins; a level neither line describes is searched over the whole board.
+used: the free run across the player's row is tried first, and a line is kept only when every room it leaves holds as many
+boxes as goals and no box or goal sits on the line; the run up and down the player's column is a fallback, and a level
+neither line describes is searched over the whole board.
 Before the search, a reverse push search from each goal marks every square a box can be pushed to that goal from; a box on
 a square that reaches no goal is dead, and a push onto such a square is pruned. The estimate is the least-cost assignment
 of boxes to goals under those push distances, exact for up to four boxes and the Hungarian method above. After the pushes
